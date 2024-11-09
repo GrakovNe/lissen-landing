@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lissen: Audiobookshelf Client</title>
+    <!-- Добавление фавиконки -->
+    <link rel="icon" href="https://raw.githubusercontent.com/GrakovNe/lissen-android/refs/heads/main/metadata/en-US/images/icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Color Scheme */
+        /* Цветовая схема */
         :root {
             --fox-orange: #FF6F3F;
             --dark: #333333;
@@ -21,7 +23,7 @@
             --footer-link: #FF6F3F;
         }
 
-        /* Global Styles */
+        /* Глобальные стили */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -60,7 +62,7 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
 
-        /* Language Selector */
+        /* Селектор языка */
         .language-selector {
             position: absolute;
             top: 20px;
@@ -83,7 +85,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Header Section */
+        /* Раздел заголовка */
         header {
             padding-bottom: 30px;
             text-align: center;
@@ -105,7 +107,7 @@
             line-height: 1.5;
         }
 
-        /* Download Badges Section */
+        /* Раздел кнопок загрузки */
         .download-badges {
             margin: 50px 0;
             display: flex;
@@ -124,7 +126,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Screenshots Section */
+        /* Раздел скриншотов */
         .screenshots {
             display: flex;
             flex-wrap: wrap;
@@ -145,7 +147,7 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        /* Footer Section */
+        /* Раздел футера */
         footer {
             margin-top: 60px;
             padding: 20px 0;
@@ -193,7 +195,7 @@
             transform: scale(1.2);
         }
 
-        /* Responsive Design */
+        /* Адаптивный дизайн */
         @media (max-width: 992px) {
             header h1 {
                 font-size: 2.5rem;
@@ -255,13 +257,13 @@
 </head>
 <body>
 <div class="card">
-    <!-- Language Selector -->
+    <!-- Селектор языка -->
     <div class="language-selector">
         <img src="https://flagcdn.com/w320/gb.png" alt="English" id="en">
         <img src="https://flagcdn.com/w320/ru.png" alt="Русский" id="ru">
     </div>
 
-    <!-- Header Section -->
+    <!-- Раздел заголовка -->
     <header>
         <h1>Lissen: Audiobookshelf Client</h1>
         <p class="description" data-en="Experience seamless audiobook listening with Lissen. Sync your progress across devices and enjoy a minimalist interface designed for true audiobook enthusiasts" data-ru="Слушайте любимые аудиокниги с Lissen. Синхронизируйте прогресс между устройствами и другими проигрывателями Audiobookshelf и скачивайте книги, чтобы слушать их без интернета">
@@ -269,7 +271,7 @@
         </p>
     </header>
 
-    <!-- Download Badges Section -->
+    <!-- Раздел кнопок загрузки -->
     <div class="download-badges">
         <a href="https://play.google.com/store/apps/details?id=org.grakovne.lissen">
             <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="60">
@@ -279,7 +281,7 @@
         </a>
     </div>
 
-    <!-- Screenshots Section -->
+    <!-- Раздел скриншотов -->
     <div class="screenshots">
         <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/1.png" alt="Screenshot 1" width="200">
         <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/2.png" alt="Screenshot 2" width="200">
@@ -287,7 +289,7 @@
         <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/4.png" alt="Screenshot 4" width="200">
     </div>
 
-    <!-- Footer Section -->
+    <!-- Раздел футера -->
     <footer>
         &copy; 2024 Max Grakov. MIT License
         <div class="footer-links">
