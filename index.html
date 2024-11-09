@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lissen: Audiobookshelf Client</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Color Scheme */
+        :root {
+            --fox-orange: #FF6F3F;
+            --dark: #333333;
+            --light-background: #FAFAFA;
+            --surface-container: #EEEEEE;
+            --card-background: #FFFFFF;
+            --font-family-body: 'Roboto', sans-serif;
+            --font-family-header: 'Poppins', sans-serif;
+            --max-width: 1200px;
+            --footer-background: #f5f5f5;
+            --footer-text: #555555;
+            --footer-link: #FF6F3F;
+        }
+
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-body);
+            background-color: var(--light-background);
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            max-width: var(--max-width);
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Language Selector */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .language-selector img {
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .language-selector img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header Section */
+        header {
+            padding-bottom: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: var(--font-family-header);
+            font-size: 3rem;
+            color: var(--fox-orange);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Download Badges Section */
+        .download-badges {
+            margin: 50px 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .download-badges a img {
+            height: 60px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .download-badges a img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .screenshots img {
+            width: 200px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .screenshots img:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Footer Section */
+        footer {
+            margin-top: 60px;
+            padding: 20px 0;
+            background-color: var(--footer-background);
+            color: var(--footer-text);
+            font-size: 0.9rem;
+            text-align: center;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer .footer-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        footer .footer-links a {
+            color: var(--footer-link);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        footer .footer-links a:hover {
+            color: var(--fox-orange);
+        }
+
+        footer .github-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        footer .github-link img {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        footer .github-link img:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .description {
+                font-size: 1.1rem;
+            }
+
+            .download-badges a img {
+                height: 55px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .download-badges {
+                gap: 20px;
+            }
+
+            .screenshots img {
+                width: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .description {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+
+            .download-badges {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .download-badges a img {
+                height: 50px;
+            }
+
+            .screenshots img {
+                width: 150px;
+            }
+
+            .language-selector {
+                top: 10px;
+                right: 20px;
+            }
+
+            .language-selector img {
+                width: 25px;
+                height: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <img src="https://flagcdn.com/w320/gb.png" alt="English" id="en">
+        <img src="https://flagcdn.com/w320/ru.png" alt="Русский" id="ru">
+    </div>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Lissen: Audiobookshelf Client</h1>
+        <p class="description" data-en="Experience seamless audiobook listening with Lissen. Sync your progress across devices and enjoy a minimalist interface designed for true audiobook enthusiasts" data-ru="Слушайте любимые аудиокниги с Lissen. Синхронизируйте прогресс между устройствами и другими проигрывателями Audiobookshelf и скачивайте книги, чтобы слушать их без интернета">
+            Experience seamless audiobook listening with Lissen. Sync your progress across devices and enjoy a minimalist interface designed for true audiobook enthusiasts
+        </p>
+    </header>
+
+    <!-- Download Badges Section -->
+    <div class="download-badges">
+        <a href="https://play.google.com/store/apps/details?id=org.grakovne.lissen">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="60">
+        </a>
+        <a href="https://f-droid.org/packages/org.grakovne.lissen">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Get_it_on_F-Droid_%28material_design%29.svg" alt="Get it on F-Droid" height="60">
+        </a>
+    </div>
+
+    <!-- Screenshots Section -->
+    <div class="screenshots">
+        <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/1.png" alt="Screenshot 1" width="200">
+        <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/2.png" alt="Screenshot 2" width="200">
+        <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/3.png" alt="Screenshot 3" width="200">
+        <img src="https://github.com/GrakovNe/lissen-android/raw/main/metadata/en-US/images/phoneScreenshots/4.png" alt="Screenshot 4" width="200">
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        &copy; 2024 Max Grakov. MIT License
+        <div class="footer-links">
+            <a href="https://github.com/GrakovNe/lissen-android" class="github-link">
+                <img src="github-mark.svg" alt="GitHub" width="20">
+            </a>
+            <a href="https://privacy.lissenapp.org/">Privacy Policy</a>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const enButton = document.getElementById('en');
+    const ruButton = document.getElementById('ru');
+
+    enButton.addEventListener('click', () => {
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerHTML = el.getAttribute('data-en');
+        });
+    });
+
+    ruButton.addEventListener('click', () => {
+        document.querySelectorAll('[data-ru]').forEach(el => {
+            el.innerHTML = el.getAttribute('data-ru');
+        });
+    });
+</script>
+</body>
+</html>
