@@ -43,9 +43,11 @@ class TestObtainiumButton(unittest.TestCase):
         for href in (
             "https://play.google.com/store/apps/details?id=org.grakovne.lissen",
             "https://f-droid.org/packages/org.grakovne.lissen",
-            "https://www.rustore.ru/catalog/app/org.grakovne.lissen",
         ):
             self.assertIn(href, self.badges)
+
+    def test_rustore_removed(self):
+        self.assertNotIn("rustore.ru", HTML)
 
 
 if __name__ == "__main__":
