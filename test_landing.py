@@ -2,7 +2,8 @@ import re
 import unittest
 from pathlib import Path
 
-HTML = Path(__file__).parent.joinpath("index.html").read_text(encoding="utf-8")
+HERE = Path(__file__).parent
+HTML = HERE.joinpath("index.html").read_text(encoding="utf-8")
 
 OBTAINIUM_HREF = (
     "https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/"
@@ -10,24 +11,25 @@ OBTAINIUM_HREF = (
     "github.com%2FGrakovNe%2Flissen-android%22%2C%22author%22%3A%22GrakovNe%22"
     "%2C%22name%22%3A%22Lissen%22%7D"
 )
-OBTAINIUM_BADGE = (
-    "https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png"
-)
+OBTAINIUM_BADGE = "badge-obtainium.png"
+
+
+def badges_section():
+    match = re.search(r'<div class="download-badges">(.*?)</div>', HTML, re.DOTALL)
+    assert match, "download-badges section not found"
+    return match.group(1)
 
 
 class TestObtainiumButton(unittest.TestCase):
     def setUp(self):
-        match = re.search(
-            r'<div class="download-badges">(.*?)</div>', HTML, re.DOTALL
-        )
-        self.assertIsNotNone(match, "download-badges section not found")
-        self.badges = match.group(1)
+        self.badges = badges_section()
 
     def test_obtainium_anchor_present(self):
         self.assertIn(OBTAINIUM_HREF, self.badges)
 
-    def test_obtainium_badge_image_present(self):
+    def test_obtainium_uses_local_cropped_badge(self):
         self.assertIn(OBTAINIUM_BADGE, self.badges)
+        self.assertTrue(HERE.joinpath(OBTAINIUM_BADGE).exists())
 
     def test_obtainium_anchor_wraps_badge(self):
         anchor = re.search(
@@ -51,45 +53,49 @@ class TestObtainiumButton(unittest.TestCase):
 
 
 class TestBadgeSizes(unittest.TestCase):
-    # badge_obtainium.png (646x250) has transparent padding: visible pill is 67.2% of height
-    OBTAINIUM_VISIBLE_RATIO = 0.672
+    def test_all_badge_imgs_same_height_attr(self):
+        heights = re.findall(r'<img src="[^"]+" alt="Get it on [^"]+" height="(\d+)"', HTML)
+        self.assertEqual(len(heights), 3)
+        self.assertEqual(set(heights), {"60"})
 
-    def css_height(self, selector):
-        match = re.search(
-            re.escape(selector) + r"\s*\{[^}]*?height:\s*(\d+)px", HTML
+    def test_css_single_height_rule(self):
+        self.assertNotIn(".obtainium img", HTML)
+        heights = re.findall(
+            r"\.download-badges a img\s*\{[^}]*?height:\s*(\d+)px", HTML
         )
-        self.assertIsNotNone(match, f"CSS rule for {selector} not found")
-        return int(match.group(1))
+        self.assertEqual(sorted(map(int, heights)), [30, 55, 60])
 
-    def test_obtainium_img_attr_is_89(self):
-        match = re.search(
-            r'class="obtainium"[^>]*>\s*<img[^>]*height="(\d+)"', HTML
-        )
-        self.assertIsNotNone(match)
-        self.assertEqual(int(match.group(1)), 89)
+    def test_anchors_center_items_vertically(self):
+        rule = re.search(r"\.download-badges a\s*\{([^}]*)\}", HTML)
+        self.assertIsNotNone(rule)
+        self.assertIn("display: flex", rule.group(1))
+        self.assertIn("align-items: center", rule.group(1))
 
-    def test_visible_heights_match_at_all_breakpoints(self):
-        for base_selector, obtainium_selector in (
-            (".download-badges a img", ".download-badges .obtainium img"),
-        ):
-            base = self.css_height(base_selector)
-            obtainium = self.css_height(obtainium_selector)
-            self.assertAlmostEqual(
-                obtainium * self.OBTAINIUM_VISIBLE_RATIO,
-                base,
-                delta=2,
-                msg=f"obtainium {obtainium}px vs standard {base}px not visually equal",
-            )
 
-    def test_media_queries_scale_obtainium_too(self):
-        obtainium_heights = re.findall(
-            r"\.download-badges \.obtainium img\s*\{[^}]*?height:\s*(\d+)px",
-            HTML,
-        )
-        self.assertEqual(len(obtainium_heights), 3, "desktop + 2 media queries")
-        self.assertEqual(
-            sorted(map(int, obtainium_heights)), [45, 82, 89]
-        )
+class TestBadgeImage(unittest.TestCase):
+    # Google Play / F-Droid SVGs render their visible pill at 56/60 of img height
+    TARGET_VISIBLE_RATIO = 56 / 60
+
+    def test_png_has_no_gray_ring(self):
+        from PIL import Image
+
+        im = Image.open(HERE / OBTAINIUM_BADGE).convert("RGBA")
+        x0, y0, x1, y1 = im.getbbox()
+        # first opaque pixel along the top edge must be dark pill, not a gray ring
+        for x in range(x0 + 10, x1 - 10, 7):
+            y = y0
+            while im.getpixel((x, y))[3] <= 200:
+                y += 1
+            brightness = sum(im.getpixel((x, y))[:3]) / 3
+            self.assertLess(brightness, 150, f"gray ring at ({x}, {y}): {im.getpixel((x, y))}")
+
+    def test_png_padding_matches_store_badges(self):
+        from PIL import Image
+
+        im = Image.open(HERE / OBTAINIUM_BADGE).convert("RGBA")
+        bbox = im.getbbox()
+        ratio = (bbox[3] - bbox[1]) / im.height
+        self.assertAlmostEqual(ratio, self.TARGET_VISIBLE_RATIO, delta=0.01)
 
 
 if __name__ == "__main__":

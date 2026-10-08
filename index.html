@@ -111,14 +111,15 @@
             flex-wrap: wrap;
         }
 
-        .download-badges a img {
-            height: 60px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .download-badges a {
+            display: flex;
+            align-items: center;
         }
 
-        /* Obtainium badge PNG has ~33% transparent padding, scale it up to match visually */
-        .download-badges .obtainium img {
-            height: 89px;
+        .download-badges a img {
+            display: block;
+            height: 60px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .download-badges a img:hover {
@@ -206,10 +207,6 @@
             .download-badges a img {
                 height: 55px;
             }
-
-            .download-badges .obtainium img {
-                height: 82px;
-            }
         }
 
         @media (max-width: 768px) {
@@ -240,10 +237,6 @@
 
             .download-badges a img {
                 height: 30px;
-            }
-
-            .download-badges .obtainium img {
-                height: 45px;
             }
 
             .screenshots img {
@@ -283,8 +276,8 @@
         <a href="https://f-droid.org/packages/org.grakovne.lissen">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Get_it_on_F-Droid_%28material_design%29.svg" alt="Get it on F-Droid" height="60">
         </a>
-        <a class="obtainium" href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22org.grakovne.lissen%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FGrakovNe%2Flissen-android%22%2C%22author%22%3A%22GrakovNe%22%2C%22name%22%3A%22Lissen%22%7D">
-            <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="89">
+        <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22org.grakovne.lissen%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FGrakovNe%2Flissen-android%22%2C%22author%22%3A%22GrakovNe%22%2C%22name%22%3A%22Lissen%22%7D">
+            <img src="badge-obtainium.png" alt="Get it on Obtainium" height="60">
         </a>
     </div>
 
