@@ -27,9 +27,13 @@ class TestObtainiumButton(unittest.TestCase):
     def test_obtainium_anchor_present(self):
         self.assertIn(OBTAINIUM_HREF, self.badges)
 
-    def test_obtainium_uses_local_cropped_badge(self):
-        self.assertIn(OBTAINIUM_BADGE, self.badges)
-        self.assertTrue(HERE.joinpath(OBTAINIUM_BADGE).exists())
+    def test_obtainium_uses_embedded_badge(self):
+        import base64
+
+        match = re.search(r'<img src="data:image/png;base64,([^"]+)"', self.badges)
+        self.assertIsNotNone(match, "obtainium badge is not an embedded data URI")
+        embedded = base64.b64decode(match.group(1))
+        self.assertEqual(embedded, HERE.joinpath(OBTAINIUM_BADGE).read_bytes())
 
     def test_obtainium_anchor_wraps_badge(self):
         anchor = re.search(
@@ -38,7 +42,7 @@ class TestObtainiumButton(unittest.TestCase):
         )
         self.assertIsNotNone(anchor, "obtainium anchor does not wrap a badge image")
         self.assertEqual(anchor.group(1), OBTAINIUM_HREF)
-        self.assertEqual(anchor.group(2), OBTAINIUM_BADGE)
+        self.assertTrue(anchor.group(2).startswith("data:image/png;base64,"))
         self.assertEqual(anchor.group(3), "Get it on Obtainium")
 
     def test_other_badges_still_present(self):
