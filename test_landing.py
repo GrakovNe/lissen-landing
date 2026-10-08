@@ -31,7 +31,7 @@ class TestObtainiumButton(unittest.TestCase):
 
     def test_obtainium_anchor_wraps_badge(self):
         anchor = re.search(
-            r'<a href="([^"]*obtainium[^"]*)">\s*<img src="([^"]+)" alt="([^"]+)"',
+            r'<a\b[^>]*href="([^"]*obtainium[^"]*)"[^>]*>\s*<img src="([^"]+)" alt="([^"]+)"',
             self.badges,
         )
         self.assertIsNotNone(anchor, "obtainium anchor does not wrap a badge image")
@@ -48,6 +48,48 @@ class TestObtainiumButton(unittest.TestCase):
 
     def test_rustore_removed(self):
         self.assertNotIn("rustore.ru", HTML)
+
+
+class TestBadgeSizes(unittest.TestCase):
+    # badge_obtainium.png (646x250) has transparent padding: visible pill is 67.2% of height
+    OBTAINIUM_VISIBLE_RATIO = 0.672
+
+    def css_height(self, selector):
+        match = re.search(
+            re.escape(selector) + r"\s*\{[^}]*?height:\s*(\d+)px", HTML
+        )
+        self.assertIsNotNone(match, f"CSS rule for {selector} not found")
+        return int(match.group(1))
+
+    def test_obtainium_img_attr_is_89(self):
+        match = re.search(
+            r'class="obtainium"[^>]*>\s*<img[^>]*height="(\d+)"', HTML
+        )
+        self.assertIsNotNone(match)
+        self.assertEqual(int(match.group(1)), 89)
+
+    def test_visible_heights_match_at_all_breakpoints(self):
+        for base_selector, obtainium_selector in (
+            (".download-badges a img", ".download-badges .obtainium img"),
+        ):
+            base = self.css_height(base_selector)
+            obtainium = self.css_height(obtainium_selector)
+            self.assertAlmostEqual(
+                obtainium * self.OBTAINIUM_VISIBLE_RATIO,
+                base,
+                delta=2,
+                msg=f"obtainium {obtainium}px vs standard {base}px not visually equal",
+            )
+
+    def test_media_queries_scale_obtainium_too(self):
+        obtainium_heights = re.findall(
+            r"\.download-badges \.obtainium img\s*\{[^}]*?height:\s*(\d+)px",
+            HTML,
+        )
+        self.assertEqual(len(obtainium_heights), 3, "desktop + 2 media queries")
+        self.assertEqual(
+            sorted(map(int, obtainium_heights)), [45, 82, 89]
+        )
 
 
 if __name__ == "__main__":
