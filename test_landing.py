@@ -102,5 +102,17 @@ class TestBadgeImage(unittest.TestCase):
         self.assertAlmostEqual(ratio, self.TARGET_VISIBLE_RATIO, delta=0.01)
 
 
+class TestScreenshots(unittest.TestCase):
+    def test_no_russian_screenshot_urls(self):
+        self.assertNotIn("ru-RU/images/phoneScreenshots", HTML)
+
+    def test_screenshots_have_no_language_switch_attrs(self):
+        match = re.search(r'<div class="screenshots">(.*?)</div>', HTML, re.DOTALL)
+        assert match, "screenshots section not found"
+        self.assertNotIn("data-ru", match.group(1))
+        self.assertNotIn("data-en", match.group(1))
+        self.assertEqual(len(re.findall(r"en-US/images/phoneScreenshots", match.group(1))), 4)
+
+
 if __name__ == "__main__":
     unittest.main()
